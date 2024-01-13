@@ -74,11 +74,15 @@ int part1(ifstream &f) {
 
 int get_gear_ratio(int sym, map_pair_int& past_num_list, map_pair_int& num_list, map_pair_int& next_num_list) {
 	vector<int> part_nums;
-	multimap<pair<int, int>, int> tmp(past_num_list.begin(), past_num_list.end());
-	tmp.insert(num_list.begin(), num_list.end());
-	tmp.insert(next_num_list.begin(), next_num_list.end());
-
-	for (auto num : tmp) {
+	for (auto num : past_num_list) {
+		if (sym >= num.first.first - 1 && sym <= num.first.second + 1)
+			part_nums.push_back(num.second);
+	}
+	for (auto num : num_list) {
+		if (sym >= num.first.first - 1 && sym <= num.first.second + 1)
+			part_nums.push_back(num.second);
+	}
+	for (auto num : next_num_list) {
 		if (sym >= num.first.first - 1 && sym <= num.first.second + 1)
 			part_nums.push_back(num.second);
 	}
@@ -141,12 +145,23 @@ long part2(ifstream &f) {
 	return sum;
 }
 
+#include <chrono>
+
 int main() {
 	ifstream f;
 	f.open("input", ios_base::openmode::_S_in);
-	cout << "Part 1: " << part1(f) << endl;
+	long p;
+	chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
+	p = part1(f);
+	chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
+	cout << "Part 1: " << p << endl;
+	cout << chrono::duration_cast<chrono::microseconds>(end - start).count() << "us" << endl;
 	f.clear();
 	f.seekg(0);
-	cout << "Part 2: " << part2(f) << endl;
+	start = chrono::high_resolution_clock::now();
+	p = part2(f);
+	end = chrono::high_resolution_clock::now();
+	cout << "Part 2: " << p << endl;
+	cout << chrono::duration_cast<chrono::microseconds>(end - start).count() << "us" << endl;
 	f.close();
 }
